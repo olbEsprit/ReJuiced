@@ -5,15 +5,23 @@ code is statically recompiled to C++ with [SwARc](https://github.com/JTM-rootsto
 Windows (Direct3D 9, DirectSound, DirectInput, Bink, kernel32) is replaced by SwARc's runtime on Metal, SDL3 and
 CoreAudio.
 
+> **Work in progress.** The game plays from the menus through races on an M-series Mac, but it has not been
+> played through, and the build steps below are the only way to get it for now.
+
 **This repository contains no part of the game.** You need your own copy of Juiced: its installed data files and the
 version 1.00 `Juiced.exe` without copy protection (sha256
 `6e9b5d5ed5e3bd2319da5ab7d73dd396c78fc95cacbd40101427dc6f03ca9d1b`). Neither is distributed here.
 
 ## What works
-- The whole game, menus to races, at the desktop's resolution.
+- Menus, career and races, at the desktop's resolution.
 - Gamepads (SDL3: DualSense, Xbox, …), with pad button hints in the menus.
 - Widescreen: camera, field of view and HUD for 16:10, 16:9 and wider, with the UI from 4D-Eclipse's
   JuicedWidescreenFix (downloaded by a script, see `docs/widescreen.md`).
+
+## Known issues
+- The game can hang on the second intro movie now and then; restarting gets past it.
+- With a gamepad connected, the log fills with the game's wheel-wrapper messages.
+- The `.app` from `tools/pack-app.sh` uses this Mac's Homebrew libraries and the game folder set at build time.
 
 ## Build
 Needs macOS 14+ on Apple Silicon, Xcode command line tools, CMake 3.25+, Ninja, Python 3, and Homebrew `sdl3`
