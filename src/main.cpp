@@ -162,7 +162,10 @@ int main(int argc, char** argv) {
       return 2;
     }
   } else if (r) {
+    // The desktop in points, not pixels: the game's text and some HUD are drawn in pixels and too small past ~3000.
     recomp::DesktopSize(&rw, &rh);
+    const SDL_DisplayMode* m = SDL_GetDesktopDisplayMode(SDL_GetPrimaryDisplay());
+    if (m && m->pixel_density > 1) rw = int(std::lround(rw / m->pixel_density)), rh = int(std::lround(rh / m->pixel_density));
   }
   if (r) {
     const char* ws = std::getenv("JUICED_WIDESCREEN");

@@ -43,7 +43,7 @@ names, so it takes no more space) and its widescreen UI. It is yours alone; its 
 | variable | meaning |
 |---|---|
 | `JUICED_GAME_DIR` | the installed game, overrides the build's default |
-| `JUICED_RESOLUTION` | `WxH` or `auto` (the desktop's size); unset, the game's own settings |
+| `JUICED_RESOLUTION` | `WxH` or `auto` (the desktop's size in points, e.g. 3008x1692 on a 6016x3384 screen); unset, the game's own settings |
 | `JUICED_WIDESCREEN` | `0`/`1`; by default on for a mode wider than 4:3 |
 | `JUICED_WS_DIR` | where `tools/widescreen-ui.sh` put the widescreen UI (default `game/`) |
 
