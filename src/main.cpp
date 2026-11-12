@@ -75,9 +75,9 @@ static void FifoKeys(const char* path) {
 
 // 4D-Eclipse's Juiced Widescreen Fix (JuicedWidescreenFix.asi 1.0, docs/widescreen.md) for 1.00: the
 // widescreen camera's aspect and field of view, the 2D text's horizontal scale and the speed blur, per screen shape;
-// its HUD and menu layouts (ui\windows) from game/ws<shape> (tools/widescreen-ui.sh) unless JUICED_GAME_DIR
-// names a folder.
-void WidescreenFix(recomp::GameConfig& g, int w, int h, const char* env_dir, std::string* game_dir) {
+// its HUD and menu layouts (ui\windows) from ws<shape> in JUICED_WS_DIR (default game/, tools/widescreen-ui.sh) when
+// that folder was made from this game folder.
+void WidescreenFix(recomp::GameConfig& g, int w, int h, std::string* game_dir) {
   struct Shape {
     const char* name;
     int w, h;
@@ -107,8 +107,11 @@ void WidescreenFix(recomp::GameConfig& g, int w, int h, const char* env_dir, std
   patch(0x6FEA14, 1.333f, fov);
   patch(0x6FE670, 0.0015625f, kerning);
   patch(0x6FEAF8, 0.975f, blur);
-  const std::string dir = std::string(JUICED_PORT_DIR "/game/ws") + nearest->name;
-  if (!env_dir && std::filesystem::is_directory(dir)) *game_dir = dir;
+  namespace fs = std::filesystem;
+  const char* ws_dir = std::getenv("JUICED_WS_DIR");
+  const fs::path dir = fs::path(ws_dir ? ws_dir : JUICED_PORT_DIR "/game") / (std::string("ws") + nearest->name);
+  std::error_code ec;
+  if (fs::equivalent(dir / "textures.dat", fs::path(*game_dir) / "textures.dat", ec)) *game_dir = dir.string();
 }
 
 int main(int argc, char** argv) {
@@ -173,7 +176,7 @@ int main(int argc, char** argv) {
     dword("RezDepth", 32);
     dword("Windowed", 0);
     dword("widescreen", wide);
-    if (wide) WidescreenFix(g, rw, rh, env_dir, &game_dir);
+    if (wide) WidescreenFix(g, rw, rh, &game_dir);
   }
   // The pad's hint pictures (src/hooks.cpp) are loose files the game finds beside its ui archive: the install overlay.
   if (const char* home = std::getenv("HOME")) {
@@ -181,7 +184,8 @@ int main(int argc, char** argv) {
     const fs::path to = fs::path(home) / "Library/Application Support" / g.id / "install/ui/textures";
     std::error_code ec;
     fs::create_directories(to, ec);
-    for (const auto& f : fs::directory_iterator(JUICED_ASSETS_DIR "/ui/textures", ec))
+    const char* assets = std::getenv("JUICED_ASSETS_DIR");
+    for (const auto& f : fs::directory_iterator(fs::path(assets ? assets : JUICED_ASSETS_DIR) / "ui/textures", ec))
       fs::copy_file(f.path(), to / f.path().filename(), fs::copy_options::overwrite_existing, ec);
   }
   return recomp::RunProcess(g, exe, game_dir, args);

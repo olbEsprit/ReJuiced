@@ -21,7 +21,6 @@ version 1.00 `Juiced.exe` without copy protection (sha256
 ## Known issues
 - The game can hang on the second intro movie now and then; restarting gets past it.
 - With a gamepad connected, the log fills with the game's wheel-wrapper messages.
-- The `.app` from `tools/pack-app.sh` uses this Mac's Homebrew libraries and the game folder set at build time.
 
 ## Build
 Needs macOS 14+ on Apple Silicon, Xcode command line tools, CMake 3.25+, Ninja, Python 3, and Homebrew `sdl3`
@@ -33,17 +32,21 @@ tools/prepare-exe.sh /path/to/Juiced.exe  # work/Juiced.exe, the lifter's input
 tools/lift.sh                             # x86 → C++ in generated/
 cmake --preset release -DJUICED_GAME_DIR=/path/to/installed/Juiced
 cmake --build --preset release
-tools/widescreen-ui.sh 16x9               # optional: game/ws16x9 (also 16x10, 25x16, 64x27, …)
-tools/pack-app.sh                         # optional: ~/Applications/ReJuiced.app
+tools/pack-app.sh                         # ~/Applications/ReJuiced.app
 ```
 
-Run `out/build/release/juiced`.
+`ReJuiced.app` is self-contained apart from the game's data files (it carries your prepared EXE, so keep it to
+yourself): on its first start it asks for the installed Juiced folder and sets up the widescreen UI in
+`~/Library/Application Support/juiced` (its log is `rejuiced.log` there). The build runs without the app too, as
+`out/build/release/juiced`; `tools/widescreen-ui.sh /path/to/installed/Juiced` makes the widescreen UI for it in
+`game/`.
 
 | variable | meaning |
 |---|---|
 | `JUICED_GAME_DIR` | the installed game, overrides the build's default |
 | `JUICED_RESOLUTION` | `WxH` or `auto` (the desktop's size); unset, the game's own settings |
 | `JUICED_WIDESCREEN` | `0`/`1`; by default on for a mode wider than 4:3 |
+| `JUICED_WS_DIR` | where `tools/widescreen-ui.sh` put the widescreen UI (default `game/`) |
 
 ## Layout
 - `src/`: the port: the game's configuration for the runtime, a few replaced functions, widescreen values.
