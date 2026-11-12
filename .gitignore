@@ -1,0 +1,10 @@
+/out/
+/generated/
+/work/
+/vendor/
+/game/
+*.exe
+*.dat
+.venv/
+__pycache__/
+.DS_Store
