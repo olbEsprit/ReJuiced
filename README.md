@@ -32,14 +32,13 @@ tools/prepare-exe.sh /path/to/Juiced.exe  # work/Juiced.exe, the lifter's input
 tools/lift.sh                             # x86 → C++ in generated/
 cmake --preset release -DJUICED_GAME_DIR=/path/to/installed/Juiced
 cmake --build --preset release
-tools/pack-app.sh                         # ~/Applications/ReJuiced.app
+tools/pack-app.sh                         # ~/Applications/ReJuiced.app, with the game inside
 ```
 
-`ReJuiced.app` is self-contained apart from the game's data files (it carries your prepared EXE, so keep it to
-yourself): on its first start it asks for the installed Juiced folder and sets up the widescreen UI in
-`~/Library/Application Support/juiced` (its log is `rejuiced.log` there). The build runs without the app too, as
-`out/build/release/juiced`; `tools/widescreen-ui.sh /path/to/installed/Juiced` makes the widescreen UI for it in
-`game/`.
+`ReJuiced.app` carries everything: the libraries, your prepared EXE, the game (an APFS clone of the folder the build
+names, so it takes no more space) and its widescreen UI. It is yours alone; its log is
+`~/Library/Application Support/juiced/rejuiced.log`. The build runs without the app too, as `out/build/release/juiced`;
+`tools/widescreen-ui.sh /path/to/installed/Juiced` makes the widescreen UI for it in `game/`.
 
 | variable | meaning |
 |---|---|

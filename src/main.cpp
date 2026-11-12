@@ -93,8 +93,8 @@ void WidescreenFix(recomp::GameConfig& g, int w, int h, std::string* game_dir) {
     if (s.w * h == s.h * w) aspect = s.aspect, fov = s.fov;
     if (std::fabs(float(s.w) / s.h - r) < std::fabs(float(nearest->w) / nearest->h - r)) nearest = &s;
   }
-  const float kerning = r < 1.5625f ? 0.0015625f : r < 1.6667f ? 0.0013333f : r < 1.7778f ? 0.0013021f
-                        : r < 2.3704f                ? 0.0011710f
+  const float kerning = r < 1.5625f ? 0.0015625f : r < 1.6666666f ? 0.0013333f : r < 1.7777778f ? 0.0013021f
+                        : r < 2.3703704f                ? 0.0011710f
                                                      : 0.00087873f;
   const float blur = std::clamp(1.3f / fov, 0.0f, 0.97f);
   auto patch = [&](uint32_t va, float was, float v) {

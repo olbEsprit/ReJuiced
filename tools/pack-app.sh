@@ -1,12 +1,14 @@
 #!/bin/sh
-# pack-app.sh [out dir, default ~/Applications]: ReJuiced.app from out/build/release, with its libraries (SDL3,
-# FFmpeg and theirs from Homebrew) and work/Juiced.exe inside. On its first start it asks for the installed game and
-# makes the widescreen UI folders (tools/widescreen-ui.sh) in ~/Library/Application Support/juiced; the game itself
-# stays where it is. The app runs at the desktop's resolution unless JUICED_RESOLUTION says otherwise.
+# pack-app.sh [installed game, default the build's JUICED_GAME_DIR] [out dir, default ~/Applications]: ReJuiced.app
+# from out/build/release with everything inside: its libraries (SDL3, FFmpeg and theirs from Homebrew), work/Juiced.exe,
+# the game (an APFS clone where it can be, so it takes no more space) and the widescreen UI (tools/widescreen-ui.sh).
+# It is yours alone: it holds the game. It runs at the desktop's resolution unless JUICED_RESOLUTION says otherwise.
 set -eu
 cd "$(dirname "$0")/.."
 build=out/build/release
-dest=${1:-$HOME/Applications}
+game=${1:-$(sed -n 's/^JUICED_GAME_DIR:PATH=//p' $build/CMakeCache.txt)}
+dest=${2:-$HOME/Applications}
+[ -f "$game/textures.dat" ] || { echo "pack-app.sh: no game in '$game'" >&2; exit 1; }
 cmake --build --preset release >/dev/null
 stage="work/pack/ReJuiced.app"
 c="$stage/Contents"
@@ -43,25 +45,12 @@ for f in "$c"/Frameworks/*.dylib; do install_name_tool -add_rpath @loader_path "
 
 cat > "$c/MacOS/launch" <<'L'
 #!/bin/sh
-# The game folder is asked for once and kept in ~/Library/Application Support/juiced/game-dir.
-here=$(cd "$(dirname "$0")/.." && pwd)
+r=$(cd "$(dirname "$0")/../Resources" && pwd)
 data="$HOME/Library/Application Support/juiced"
 mkdir -p "$data"
-exec >"$data/rejuiced.log" 2>&1
-game=$(cat "$data/game-dir" 2>/dev/null || true)
-while [ ! -f "$game/textures.dat" ]; do
-  game=$(osascript -e 'POSIX path of (choose folder with prompt "Choose the installed Juiced folder (the one with textures.dat):")') || exit 0
-  game=${game%/}
-  [ -f "$game/textures.dat" ] || osascript -e 'display alert "ReJuiced" message "That folder has no textures.dat: choose the folder Juiced is installed in."'
-done
-printf '%s' "$game" > "$data/game-dir"
-if [ ! -e "$data/ws16x9/textures.dat" ] || [ "$(cd "$data/ws16x9" && realpath textures.dat)" != "$(realpath "$game/textures.dat")" ]; then
-  osascript -e 'display notification "Setting up the widescreen UI, once." with title "ReJuiced"' || true
-  JUICED_WS_DIR="$data" sh "$here/Resources/tools/widescreen-ui.sh" "$game" || true
-fi
-export JUICED_GAME_DIR="$game" JUICED_EXE="$here/Resources/Juiced.exe" JUICED_ASSETS_DIR="$here/Resources/assets"
-export JUICED_WS_DIR="$data" JUICED_RESOLUTION="${JUICED_RESOLUTION:-auto}"
-exec "$here/MacOS/juiced" "$@"
+export JUICED_GAME_DIR="$r/game" JUICED_EXE="$r/Juiced.exe" JUICED_ASSETS_DIR="$r/assets" JUICED_WS_DIR="$r/ws"
+export JUICED_RESOLUTION="${JUICED_RESOLUTION:-auto}"
+exec "$(dirname "$0")/juiced" "$@" >"$data/rejuiced.log" 2>&1
 L
 chmod +x "$c/MacOS/launch"
 cat > "$c/Info.plist" <<'P'
@@ -80,6 +69,10 @@ cat > "$c/Info.plist" <<'P'
 <key>LSApplicationCategoryType</key><string>public.app-category.racing-games</string>
 </dict></plist>
 P
-codesign --force --deep -s - "$stage" >/dev/null 2>&1
 mkdir -p "$dest" && rm -rf "$dest/ReJuiced.app" && ditto "$stage" "$dest/ReJuiced.app" && rm -rf work/pack
+r="$dest/ReJuiced.app/Contents/Resources"
+cp -cR "$game" "$r/game" 2>/dev/null || cp -R "$game" "$r/game"
+JUICED_WS_DIR="$r/ws" tools/widescreen-ui.sh "$r/game" >/dev/null
+rm -rf "$r/ws/.download"
+codesign --force --deep -s - "$dest/ReJuiced.app" >/dev/null 2>&1
 echo "$dest/ReJuiced.app"
