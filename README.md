@@ -23,7 +23,10 @@ L3+R3 on a pad (F4 on the keyboard) opens ReJuiced's own menu over the game; the
 game does not see the pad while it is open. Its settings are kept in `~/Library/Application Support/juiced/rejuiced.ini`.
 - Telemetry: FPS, or frame times, presentation and shader compiles (F3 cycles it too).
 - Anisotropic filtering, field of view.
-- Overdrive: 4- and 5-speed cars get gears up to a sixth (not in the original game).
+- Overdrive (not in the original game): with it on, the tuning menu sells an overdrive after the gears, $1500 for a
+  5-speed car (a sixth gear) and $3000 for a 4-speed one (a fifth and a sixth), each the last ratio squared over the
+  one before; selling it back returns half. It is kept in the save as the gearbox part 0x7F / 0x7E, as OpenJuice
+  does, and needs the widescreen UI (its item is added to `tuningmenu.ui`).
 
 ## Known issues
 - The game can hang on the second intro movie now and then; restarting gets past it.

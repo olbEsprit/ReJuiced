@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <atomic>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -65,6 +66,7 @@ static void FifoKeys(const char* path) {
           e.key.windowID = n ? SDL_GetWindowID(w[0]) : 0;
           e.key.scancode = sc;
           e.key.down = down;
+          e.key.which = 0xD51D51;  // the runtime's test input, taken in JUICED_BACKGROUND runs
           SDL_PushEvent(&e);
           if (!edge) std::this_thread::sleep_for(std::chrono::milliseconds(150));
         }
@@ -79,7 +81,7 @@ static void FifoKeys(const char* path) {
 // its HUD and menu layouts (ui\windows) from ws<shape> in JUICED_WS_DIR (default game/, tools/widescreen-ui.sh) when
 // that folder was made from this game folder.
 namespace recomp::gen {
-void SetOverdrive(bool on);  // src/hooks.cpp
+extern std::atomic<bool> g_overdrive_mod;  // src/hooks.cpp
 }
 
 // The camera's horizontal field of view (1.333 in the EXE), widened by the widescreen fix and by the menu's FOV item.
@@ -152,8 +154,8 @@ int main(int argc, char** argv) {
                   if (recomp::g_proc) recomp::g_proc->mem.write<float>(kFovVa, g_fov * g_fov_scale);
                 },
                 1});
-  overlay::Add({"overdrive", "Overdrive, 4 and 5 speeds", {"Off", "On"},
-                [](int v) { recomp::gen::SetOverdrive(v != 0); }, 0});
+  overlay::Add({"overdrive", "Overdrive in the tuning menu", {"Off", "On"},
+                [](int v) { recomp::gen::g_overdrive_mod = v != 0; }, 0});
   recomp::GameConfig g;
   g.id = "juiced";
   g.guest_dir = "C:\\Program Files\\THQ\\Juiced";

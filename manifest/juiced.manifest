@@ -7,6 +7,11 @@ replace 005A16D0 CpuFeatureProbe
 # Texture load by name (this = esi, the name the second stack argument): src/hooks.cpp shows the pad's button
 # pictures for the menus' keyboard hints while a pad is connected.
 replace 00510090 TextureLoad
-# The car script's ForwardGearRatios (this = ecx, the script reader; its car [+0x68], the ratios a vector at +0x12C):
-# src/hooks.cpp adds the menu's overdrive gears to 4- and 5-speed cars.
-replace 004F4B90 ForwardGearRatios
+# Fitting a car's catalogue parts into a copy of its model's dynamics (edi the car, esi the dynamics; OpenJuice's fit,
+# 0x0048E380 in its EXE): src/hooks.cpp adds an overdrive bought in the tuning menu (gearbox part byte 0x7F, 0x7E).
+replace 0048DFE0 FitParts
+# The overdrive's sale (src/hooks.cpp): tuningmenu's enter and update (this = ecx, the window the argument), and
+# gearboxmenu's update, whose gearing purchase writes the gearbox part 1.
+replace 0043A890 TuningMenuEnter
+replace 0043A9C0 TuningMenuUpdate
+replace 004427C0 GearboxMenuUpdate

@@ -38,5 +38,8 @@ for shape; do
               next }
       { print }' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
   done
+  # The tuning menu's overdrive (src/hooks.cpp sells it, and takes the item out where it is not for sale).
+  awk '{ print } /AddTexturedItem ui_gears_off/ { print "\t\t AddTexturedItem ui_gears_off  ui_gears_on -1 1.00 overdrive 10 \r" }' \
+    "$g/ui/windows/tuningmenu.ui" > "$g/ui/windows/tuningmenu.ui.tmp" && mv "$g/ui/windows/tuningmenu.ui.tmp" "$g/ui/windows/tuningmenu.ui"
   echo "$g"
 done
