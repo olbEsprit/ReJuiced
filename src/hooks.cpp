@@ -42,14 +42,21 @@ void f_005A16D0(Ctx& c) {
 // choice is made when they load.
 void f_00510090(Ctx& c) {
   static const char* const kPrompts[][2] = {
-      {"ui_selecta", "oj_pad_a"}, {"ui_back", "oj_pad_b"}, {"ui_selectb", "oj_pad_y"}, {"ui_selectc", "oj_pad_x"}};
-  static gaddr names[4];
+      {"ui_selecta", "oj_pad_a"},
+      {"ui_back", "oj_pad_b"},
+      {"ui_selectb", "oj_pad_y"},
+      {"ui_selectc", "oj_pad_x"},
+      {"ui_crewcontrol_updown", "oj_crew_updown"},  // the race HUD's crew orders (tools/crew_prompts.py)
+      {"ui_crewcontrol_leftright", "oj_crew_leftright"},
+      {"ui_crewcontrol_buttons", "oj_crew_buttons"}};
+  constexpr int kCount = sizeof kPrompts / sizeof kPrompts[0];
+  static gaddr names[kCount];
   const gaddr name = Rd32(c.esp + 8);
   if (name && !hle::XInputPads().empty()) {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < kCount; i++) {
       if (std::strcmp(reinterpret_cast<const char*>(GPtr(name)), kPrompts[i][0]) != 0) continue;
       if (!names[i]) {
-        names[i] = HeapAllocProcess(16, true);
+        names[i] = HeapAllocProcess(32, true);
         std::strcpy(reinterpret_cast<char*>(GPtr(names[i])), kPrompts[i][1]);
       }
       g_proc->mem.write<uint32_t>(c.esp + 8, uint32_t(names[i]));
