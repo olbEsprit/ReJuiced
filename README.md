@@ -36,14 +36,15 @@ game does not see the pad while it is open. Its settings are kept in `~/Library/
 - With a gamepad connected, the log fills with the game's wheel-wrapper messages.
 
 ## Build
-Needs macOS 14+ on Apple Silicon, Xcode command line tools, CMake 3.25+, Ninja, Python 3, and Homebrew `sdl3`
-and `ffmpeg`.
+Step by step, with which copy of the game you need and how to hand the build to an AI agent:
+[docs/INSTALL.md](docs/INSTALL.md). In short (macOS 14+ on Apple Silicon, Xcode command line tools, Homebrew
+`cmake ninja python sdl3 ffmpeg freetype llvm@22 glslang spirv-cross`):
 
 ```sh
 tools/fetch-x86recomp.sh                  # SwARc at the commit X86RECOMP pins, into vendor/
 tools/prepare-exe.sh /path/to/Juiced.exe  # work/Juiced.exe, the lifter's input
 tools/lift.sh                             # x86 → C++ in generated/
-cmake --preset release -DJUICED_GAME_DIR=/path/to/installed/Juiced
+cmake --preset release -DJUICED_GAME_DIR=/path/to/installed/Juiced -DRECOMP_LLVM_ROOT=/opt/homebrew/opt/llvm@22
 cmake --build --preset release
 tools/pack-app.sh                         # ~/Applications/ReJuiced.app, with the game inside
 ```
