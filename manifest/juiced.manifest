@@ -7,3 +7,6 @@ replace 005A16D0 CpuFeatureProbe
 # Texture load by name (this = esi, the name the second stack argument): src/hooks.cpp shows the pad's button
 # pictures for the menus' keyboard hints while a pad is connected.
 replace 00510090 TextureLoad
+# The car script's ForwardGearRatios (this = ecx, the script reader; its car [+0x68], the ratios a vector at +0x12C):
+# src/hooks.cpp adds the menu's overdrive gears to 4- and 5-speed cars.
+replace 004F4B90 ForwardGearRatios

@@ -78,6 +78,10 @@ static void FifoKeys(const char* path) {
 // widescreen camera's aspect and field of view, the 2D text's horizontal scale and the speed blur, per screen shape;
 // its HUD and menu layouts (ui\windows) from ws<shape> in JUICED_WS_DIR (default game/, tools/widescreen-ui.sh) when
 // that folder was made from this game folder.
+namespace recomp::gen {
+void SetOverdrive(bool on);  // src/hooks.cpp
+}
+
 // The camera's horizontal field of view (1.333 in the EXE), widened by the widescreen fix and by the menu's FOV item.
 constexpr uint32_t kFovVa = 0x6FEA14;
 float g_fov = 1.333f, g_fov_scale = 1.0f;
@@ -148,6 +152,8 @@ int main(int argc, char** argv) {
                   if (recomp::g_proc) recomp::g_proc->mem.write<float>(kFovVa, g_fov * g_fov_scale);
                 },
                 1});
+  overlay::Add({"overdrive", "Overdrive, 4 and 5 speeds", {"Off", "On"},
+                [](int v) { recomp::gen::SetOverdrive(v != 0); }, 0});
   recomp::GameConfig g;
   g.id = "juiced";
   g.guest_dir = "C:\\Program Files\\THQ\\Juiced";
