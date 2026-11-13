@@ -82,6 +82,7 @@ static void FifoKeys(const char* path) {
 // that folder was made from this game folder.
 namespace recomp::gen {
 extern std::atomic<bool> g_overdrive_mod;  // src/hooks.cpp
+extern std::atomic<bool> g_smart_crew, g_smart_opponents;  // src/ai.cpp
 }
 
 // The camera's horizontal field of view (1.333 in the EXE), widened by the widescreen fix and by the menu's FOV item.
@@ -156,6 +157,9 @@ int main(int argc, char** argv) {
                 1});
   overlay::Add({"overdrive", "Overdrive in the tuning menu", {"Off", "On"},
                 [](int v) { recomp::gen::g_overdrive_mod = v != 0; }, 0});
+  overlay::Add({"smart_crew", "Smarter crew", {"Off", "On"}, [](int v) { recomp::gen::g_smart_crew = v != 0; }, 1});
+  overlay::Add({"smart_opponents", "Smarter opponents", {"Off", "On"},
+                [](int v) { recomp::gen::g_smart_opponents = v != 0; }, 1});
   recomp::win32::GameConfig g;
   g.id = "juiced";
   g.guest_dir = "C:\\Program Files\\THQ\\Juiced";

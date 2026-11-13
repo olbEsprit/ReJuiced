@@ -18,3 +18,8 @@ replace 004427C0 GearboxMenuUpdate
 # performtype's enter and update (this = ecx, the window the argument): the overdrive's levels (src/hooks.cpp).
 replace 00441670 PerformTypeEnter
 replace 00441910 PerformTypeUpdate
+# Smarter AI (src/ai.cpp)
+hook 0049B20E ai_line
+hook 0049DE58 ai_brake
+hook 0049CB93 ai_dodge
+hook 0049CCCB ai_dodge_end

@@ -27,6 +27,9 @@ game does not see the pad while it is open. Its settings are kept in `~/Library/
   level screen: LEVEL 1 a gear more ($1500), LEVEL 2 two more ($3000), a level past six gears locked; STOCK takes it
   off for half its price back. Each new gear is the last ratio squared over the one before. It is kept in the save as
   the gearbox part 0x7F / 0x7E, as OpenJuice does, and needs the widescreen UI (its item is added to `tuningmenu.ui`).
+- Smarter crew (your crew in career races) and smarter opponents, both on by default: a car held behind a slower one
+  takes another line, brakes only as much as closing the gap needs instead of fully, and dodges a car ahead in every
+  race type (the original only in sprints).
 
 ## Known issues
 - The game can hang on the second intro movie now and then; restarting gets past it.
