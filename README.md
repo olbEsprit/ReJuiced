@@ -18,6 +18,13 @@ version 1.00 `Juiced.exe` without copy protection (sha256
 - Widescreen: camera, field of view and HUD for 16:10, 16:9 and wider, with the UI from 4D-Eclipse's
   JuicedWidescreenFix (downloaded by a script, see `docs/widescreen.md`).
 
+## Menu
+L3+R3 on a pad (F4 on the keyboard) opens ReJuiced's own menu over the game; the D-pad moves, A changes, B closes. The
+game does not see the pad while it is open. Its settings are kept in `~/Library/Application Support/juiced/rejuiced.ini`.
+- Telemetry: FPS, or frame times, presentation and shader compiles (F3 cycles it too).
+- Anisotropic filtering, field of view.
+- Overdrive: 4- and 5-speed cars get gears up to a sixth (not in the original game).
+
 ## Known issues
 - The game can hang on the second intro movie now and then; restarting gets past it.
 - With a gamepad connected, the log fills with the game's wheel-wrapper messages.
