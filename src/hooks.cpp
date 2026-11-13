@@ -5,9 +5,9 @@
 #include <mutex>
 #include <strings.h>
 
-#include "runtime/hle/kernel32_state.h"
-#include "runtime/hle/xinput.h"
-#include "runtime/runtime.h"
+#include "win32/kernel32_state.h"
+#include "win32/xinput.h"
+#include "win32/process.h"
 
 namespace recomp::gen {
 

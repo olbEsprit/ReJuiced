@@ -14,7 +14,7 @@
 #include "runtime/log.h"
 #include "runtime/display.h"
 #include "runtime/gfx/overlay.h"
-#include "runtime/runtime.h"
+#include "win32/process.h"
 
 // JUICED_KEYS="25:Return,33:+Up,40:-Up": press (or +hold/-release) keys at seconds since start, without needing focus.
 static void ScriptKeys(std::string spec) {
@@ -88,7 +88,7 @@ extern std::atomic<bool> g_overdrive_mod;  // src/hooks.cpp
 constexpr uint32_t kFovVa = 0x6FEA14;
 float g_fov = 1.333f, g_fov_scale = 1.0f;
 
-void WidescreenFix(recomp::GameConfig& g, int w, int h, std::string* game_dir) {
+void WidescreenFix(recomp::win32::GameConfig& g, int w, int h, std::string* game_dir) {
   struct Shape {
     const char* name;
     int w, h;
@@ -156,7 +156,7 @@ int main(int argc, char** argv) {
                 1});
   overlay::Add({"overdrive", "Overdrive in the tuning menu", {"Off", "On"},
                 [](int v) { recomp::gen::g_overdrive_mod = v != 0; }, 0});
-  recomp::GameConfig g;
+  recomp::win32::GameConfig g;
   g.id = "juiced";
   g.guest_dir = "C:\\Program Files\\THQ\\Juiced";
   g.exe_name = "Juiced.exe";
