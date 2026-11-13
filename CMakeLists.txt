@@ -23,4 +23,4 @@ target_compile_definitions(juiced PRIVATE
   JUICED_ASSETS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets"
   JUICED_PORT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(juiced PRIVATE recomp_runtime recomp_d3d9 recomp_dsound recomp_quartz recomp_bink
-                      recomp_dinput8 recomp_xinput SDL3::SDL3)
+                      recomp_dinput8 recomp_xinput recomp_gfx SDL3::SDL3)

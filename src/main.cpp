@@ -12,6 +12,7 @@
 
 #include "runtime/log.h"
 #include "runtime/display.h"
+#include "runtime/gfx/overlay.h"
 #include "runtime/runtime.h"
 
 // JUICED_KEYS="25:Return,33:+Up,40:-Up": press (or +hold/-release) keys at seconds since start, without needing focus.
@@ -77,6 +78,10 @@ static void FifoKeys(const char* path) {
 // widescreen camera's aspect and field of view, the 2D text's horizontal scale and the speed blur, per screen shape;
 // its HUD and menu layouts (ui\windows) from ws<shape> in JUICED_WS_DIR (default game/, tools/widescreen-ui.sh) when
 // that folder was made from this game folder.
+// The camera's horizontal field of view (1.333 in the EXE), widened by the widescreen fix and by the menu's FOV item.
+constexpr uint32_t kFovVa = 0x6FEA14;
+float g_fov = 1.333f, g_fov_scale = 1.0f;
+
 void WidescreenFix(recomp::GameConfig& g, int w, int h, std::string* game_dir) {
   struct Shape {
     const char* name;
@@ -104,7 +109,7 @@ void WidescreenFix(recomp::GameConfig& g, int w, int h, std::string* game_dir) {
     g.image_patches.push_back({va, b, e});
   };
   patch(0x72477C, 1.15f, aspect);
-  patch(0x6FEA14, 1.333f, fov);
+  g_fov = fov;
   patch(0x6FE670, 0.0015625f, kerning);
   patch(0x6FEAF8, 0.975f, blur);
   namespace fs = std::filesystem;
@@ -133,6 +138,16 @@ int main(int argc, char** argv) {
   recomp::g_trace = std::getenv("JUICED_TRACE") != nullptr;
   if (const char* k = std::getenv("JUICED_KEYS")) ScriptKeys(k);
   if (const char* f = std::getenv("JUICED_KEYS_FIFO")) FifoKeys(f);
+  namespace overlay = recomp::gfx::overlay;
+  if (const char* home = std::getenv("HOME"))
+    overlay::SetIni(std::string(home) + "/Library/Application Support/juiced/rejuiced.ini");
+  overlay::SetTitle("REJUICED");
+  overlay::Add({"fov", "Field of view", {"-10%", "Game", "+10%", "+20%", "+30%"},
+                [](int v) {
+                  g_fov_scale = 0.9f + 0.1f * float(v);
+                  if (recomp::g_proc) recomp::g_proc->mem.write<float>(kFovVa, g_fov * g_fov_scale);
+                },
+                1});
   recomp::GameConfig g;
   g.id = "juiced";
   g.guest_dir = "C:\\Program Files\\THQ\\Juiced";
@@ -186,6 +201,13 @@ int main(int argc, char** argv) {
     dword("Windowed", 0);
     dword("widescreen", wide);
     if (wide) WidescreenFix(g, rw, rh, &game_dir);
+  }
+  {
+    std::vector<uint8_t> b(4), e(4);
+    const float fov = g_fov * g_fov_scale, was = 1.333f;
+    std::memcpy(b.data(), &fov, 4);
+    std::memcpy(e.data(), &was, 4);
+    g.image_patches.push_back({kFovVa, b, e});
   }
   // The pad's hint pictures (src/hooks.cpp) are loose files the game finds beside its ui archive: the install overlay.
   if (const char* home = std::getenv("HOME")) {
