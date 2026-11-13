@@ -22,7 +22,7 @@ version 1.00 `Juiced.exe` without copy protection (sha256
 L3+R3 on a pad (F4 on the keyboard) opens ReJuiced's own menu over the game; the D-pad moves, A changes, B closes. The
 game does not see the pad while it is open. Its settings are kept in `~/Library/Application Support/juiced/rejuiced.ini`.
 - Telemetry: FPS, or frame times, presentation and shader compiles (F3 cycles it too).
-- Stick dead zone, anisotropic filtering, field of view.
+- Frame limit (30, 60, 120), stick dead zone, anisotropic filtering, field of view.
 - Overdrive (not in the original game): with it on, the tuning menu has OVERDRIVE after the gears, with the game's
   level screen: LEVEL 1 a gear more ($1500), LEVEL 2 two more ($3000), a level past six gears locked; STOCK takes it
   off for half its price back. Each new gear is the last ratio squared over the one before. It is kept in the save as
