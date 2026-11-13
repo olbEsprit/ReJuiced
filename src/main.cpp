@@ -143,15 +143,21 @@ int main(int argc, char** argv) {
   g.registry.push_back({"HKCU\\Software\\THQ\\Juiced", "Adapter", "", 3,
                         {0x1A, 0x3B, 0x2D, 0x7B, 0x8E, 0x5C, 0x4D, 0x4F, 0x9A, 0x1E, 0x52, 0x45,
                          0x43, 0x4F, 0x4D, 0x50}});
-  // The controls file's DIBUTTON_ANY(n) on a pad: menus select on cross, SELECT2 on triangle, back on circle; in a
-  // race the same for throttle, camera and nitro, square the handbrake, L3 reverse, R3 rear view. The rest would land
-  // on buttons the race already uses (shoulders: gears, R2: the throttle's button, options: pause).
+  // The controls file's (scripts\\controls_dx9_e.txt) DIBUTTON_ANY(n) on a pad: menus select on cross, SELECT2 on
+  // triangle, back on circle; in a race the same for throttle, camera and nitro, square the handbrake, L3 reverse, R3
+  // rear view, and in a race the player watches cross and triangle the previous and next car (SELECT, ANY(10), and
+  // NEXTCAR, a key only). Its crew orders are keys only too: the D-pad for drivers 1 (up/down) and 2 (right/left),
+  // create and the touchpad for driver 3. The rest would land on buttons the race already uses.
   g.pad_buttons = {{0xFF004400, SDL_GAMEPAD_BUTTON_SOUTH},      {0xFF004401, SDL_GAMEPAD_BUTTON_NORTH},
                    {0xFF004402, SDL_GAMEPAD_BUTTON_EAST},       {0xFF004403, -1},
                    {0xFF004404, SDL_GAMEPAD_BUTTON_WEST},       {0xFF004405, SDL_GAMEPAD_BUTTON_LEFT_STICK},
                    {0xFF004406, -1},                            {0xFF004407, SDL_GAMEPAD_BUTTON_RIGHT_STICK},
                    {0xFF004408, -1},                            {0xFF004409, -1},
-                   {0xFF00440A, -1},                            {0xFF00440B, -1}};
+                   {0xFF00440A, SDL_GAMEPAD_BUTTON_SOUTH},      {0xFF00440B, -1},
+                   {0x810004D1, SDL_GAMEPAD_BUTTON_NORTH},  // DIKEYBOARD_NEXT: NEXTCAR
+                   {0x81000411, SDL_GAMEPAD_BUTTON_DPAD_UP},    {0x81000410, SDL_GAMEPAD_BUTTON_DPAD_DOWN},   // W, Q
+                   {0x8100041F, SDL_GAMEPAD_BUTTON_DPAD_RIGHT}, {0x8100041E, SDL_GAMEPAD_BUTTON_DPAD_LEFT},   // S, A
+                   {0x8100042D, SDL_GAMEPAD_BUTTON_BACK},       {0x8100042C, SDL_GAMEPAD_BUTTON_TOUCHPAD}};   // X, Z
   // JuicedConfig.exe's display settings, as the game reads them. JUICED_RESOLUTION=WxH|auto (auto:
   // the desktop's size), JUICED_WIDESCREEN=0|1 (default: on for a mode wider than 4:3, the stock's 16:9 camera).
   int rw = 0, rh = 0;
