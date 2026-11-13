@@ -23,5 +23,20 @@ for shape; do
   for f in "$game"/*; do [ "$(basename "$f")" = ui.dat ] || ln -s "$f" "$g/"; done
   cp -cR "$mod/Juiced/ui" "$g/ui" 2>/dev/null || cp -R "$mod/Juiced/ui" "$g/ui"
   (cd "$g" && unzip -o -q "$mod/$shape.zip")
+  # The fix's menus keep the 4:3 boxes of the button hints, so they come out wide: each is made square (width =
+  # height / the screen's aspect) about its centre, as the fix's race HUD has them.
+  r=$(echo "$shape" | awk -Fx '{print $1 / $2}')
+  for f in "$g"/ui/windows/*.ui; do
+    awk -v r="$r" '
+      /^[ \t]*BeginBox/ { n = 0; inbox = 1; hint = 0 }
+      inbox { buf[n++] = $0; if ($0 ~ /Texture (ui_selecta|ui_selectb|ui_selectc|ui_back)[ \t\r]*$/) hint = 1
+              if ($0 ~ /^[ \t]*EndBox/) { inbox = 0
+                if (hint) { split(buf[0], a, " "); h = a[6] + 0; w = a[5] + 0; nw = h / r
+                  if (w > nw * 1.05) { sub(/[ \t\r]*$/, "", buf[0]); m = match(buf[0], /[^ \t]/)
+                    buf[0] = sprintf("%s%s %s %.4f %s %.4f %s\r", substr(buf[0], 1, m - 1), a[1], a[2], a[3] + (w - nw) / 2, a[4], nw, a[6]) } }
+                for (i = 0; i < n; i++) print buf[i] }
+              next }
+      { print }' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+  done
   echo "$g"
 done
