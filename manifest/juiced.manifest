@@ -15,3 +15,6 @@ replace 0048DFE0 FitParts
 replace 0043A890 TuningMenuEnter
 replace 0043A9C0 TuningMenuUpdate
 replace 004427C0 GearboxMenuUpdate
+# performtype's enter and update (this = ecx, the window the argument): the overdrive's levels (src/hooks.cpp).
+replace 00441670 PerformTypeEnter
+replace 00441910 PerformTypeUpdate
