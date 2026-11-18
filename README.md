@@ -8,13 +8,19 @@ CoreAudio.
 > **Work in progress.** The game plays from the menus through races on an M-series Mac, but it has not been
 > played through, and the build steps below are the only way to get it for now.
 
-**This repository contains no part of the game.** You need your own copy of Juiced: its installed data files and the
-version 1.00 `Juiced.exe` without copy protection (sha256
+**This repository contains no part of the game.** You need your own copy of Juiced, which has been out of print for
+years and is commonly treated as abandonware: its installed data files and the version 1.00 `Juiced.exe` without copy
+protection (sha256
 `6e9b5d5ed5e3bd2319da5ab7d73dd396c78fc95cacbd40101427dc6f03ca9d1b`). Neither is distributed here.
 
 ## What works
 - Menus, career and races, at the desktop's resolution.
-- Gamepads (SDL3: DualSense, Xbox, …), with pad button hints in the menus.
+- Gamepads (SDL3: DualSense, Xbox, …), with pad button hints in the menus; a pad connected after the game started
+  works too.
+- 60 fps in wet races at 3008x1692 on an M4 Pro (it was 30-45). What got it there: Metal command encoding on a
+  thread of its own, the game's x87 code (single precision, truncating) on host doubles instead of soft-float, exact
+  x87 sin/cos argument reduction by one 128-bit division, and the two particle effects that cost most (the sparks,
+  and the leaves the cars blow about, on the game's worker thread) rewritten in C++.
 - Widescreen: camera, field of view and HUD for 16:10, 16:9 and wider, with the UI from 4D-Eclipse's
   JuicedWidescreenFix (downloaded by a script, see `docs/widescreen.md`).
 
@@ -32,6 +38,7 @@ game does not see the pad while it is open. Its settings are kept in `~/Library/
   race type (the original only in sprints).
 
 ## Known issues
+- The menus' button hints follow whether a pad is connected when a screen loads, not the last key or button pressed.
 - The game can hang on the second intro movie now and then; restarting gets past it.
 - With a gamepad connected, the log fills with the game's wheel-wrapper messages.
 
@@ -60,6 +67,9 @@ names, so it takes no more space) and its widescreen UI. It is yours alone; its 
 | `JUICED_RESOLUTION` | `WxH` or `auto` (the desktop's size in points, e.g. 3008x1692 on a 6016x3384 screen); unset, the game's own settings |
 | `JUICED_WIDESCREEN` | `0`/`1`; by default on for a mode wider than 4:3 |
 | `JUICED_WS_DIR` | where `tools/widescreen-ui.sh` put the widescreen UI (default `game/`) |
+| `JUICED_NATIVE_SPARKS`, `JUICED_NATIVE_LEAVES` | `0`: the recompiled original of that effect instead of the C++ one |
+| `JUICED_GFX_THREAD` | `0`: Metal encoding on the game's thread |
+| `JUICED_X87_DOUBLE` | `0`: x87 on SwARc's exact soft-float model only |
 
 ## Layout
 - `src/`: the port: the game's configuration for the runtime, a few replaced functions, widescreen values.
@@ -72,6 +82,15 @@ names, so it takes no more space) and its widescreen UI. It is yours alone; its 
 The runtime changes the game needs (Direct3D 9, DirectInput pads, DirectShow audio, Bink, the lifter) are on the
 [`juiced`](https://github.com/olbEsprit/SwARc/tree/juiced) branch of a fork, pinned in `X86RECOMP`; the general ones
 are meant to go upstream.
+
+## Credits
+- [SwARc](https://github.com/JTM-rootstorm/SwARc) (formerly x86recomp) by JTM-rootstorm, which does the hard part, and
+  the [Red Alert 2 port](https://github.com/ly05010419/MacNativeGames) built on it, which showed the way.
+- [JuicedWidescreenFix](https://github.com/4D-Eclipse/JuicedWidescreenFix) by 4D-Eclipse, after TFP-dev's fix: the
+  widescreen values and UI.
+- [OpenJuice](https://github.com/martin2844/juiced) by martin2844: its notes on the game's code made the overdrive
+  and the smarter AI much quicker to find.
+- [Xelu's Free Controller & Key Prompts](https://thoseawesomeguys.com/prompts/): the pad button pictures.
 
 ## License
 MIT, see `LICENSE`. Third-party parts: `THIRD_PARTY_NOTICES.md`. Juiced is a trademark of its owners; this project
