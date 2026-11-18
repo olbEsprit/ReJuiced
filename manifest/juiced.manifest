@@ -18,6 +18,9 @@ replace 004427C0 GearboxMenuUpdate
 # performtype's enter and update (this = ecx, the window the argument): the overdrive's levels (src/hooks.cpp).
 replace 00441670 PerformTypeEnter
 replace 00441910 PerformTypeUpdate
+# SPARKS effect Update (this = ecx, ret 4; vtable 0x6F6408 +0x14): ~10% of the main thread in wet races, all of it the per-particle
+# x87 loop through the soft-float path. src/sparks.cpp runs it as C++ with the game's own calls (JUICED_NATIVE_SPARKS=0: the lifted one).
+replace 00509720 SparksUpdate
 # Smarter AI (src/ai.cpp)
 hook 0049B20E ai_line
 hook 0049DE58 ai_brake
