@@ -3,6 +3,7 @@
 - **SwARc**, formerly x86recomp (https://github.com/JTM-rootstorm/SwARc), MIT. Its `juiced` branch
   (https://github.com/olbEsprit/SwARc) is fetched into `vendor/`, not included.
 - **SDL3** (https://libsdl.org), zlib license. Linked from Homebrew.
+- **FreeType** (https://freetype.org), FreeType License. Linked from Homebrew by SwARc's runtime.
 - **FFmpeg** (https://ffmpeg.org), LGPL 2.1+. Linked dynamically from Homebrew by x86recomp's Bink replacement.
 - **Xelu's Free Controller & Key Prompts** (https://thoseawesomeguys.com/prompts/), CC0. The originals are in
   `tools/pad_prompts_src/`; `assets/ui/textures/` is made from them by `tools/pad_prompts.py`.

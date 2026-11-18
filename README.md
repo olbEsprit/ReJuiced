@@ -17,10 +17,7 @@ protection (sha256
 - Menus, career and races, at the desktop's resolution.
 - Gamepads (SDL3: DualSense, Xbox, …), with pad button hints in the menus; a pad connected after the game started
   works too.
-- 60 fps in wet races at 3008x1692 on an M4 Pro (it was 30-45). What got it there: Metal command encoding on a
-  thread of its own, the game's x87 code (single precision, truncating) on host doubles instead of soft-float, exact
-  x87 sin/cos argument reduction by one 128-bit division, and the two particle effects that cost most (the sparks,
-  and the leaves the cars blow about, on the game's worker thread) rewritten in C++.
+- 60 fps in rain at 3008x1692 on an M4 Pro.
 - Widescreen: camera, field of view and HUD for 16:10, 16:9 and wider, with the UI from 4D-Eclipse's
   JuicedWidescreenFix (downloaded by a script, see `docs/widescreen.md`).
 
