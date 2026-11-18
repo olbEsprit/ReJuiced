@@ -21,6 +21,12 @@ replace 00441910 PerformTypeUpdate
 # SPARKS effect Update (this = ecx, ret 4; vtable 0x6F6408 +0x14): ~10% of the main thread in wet races, all of it the per-particle
 # x87 loop through the soft-float path. src/sparks.cpp runs it as C++ with the game's own calls (JUICED_NATIVE_SPARKS=0: the lifted one).
 replace 00509720 SparksUpdate
+# LEAVES effect's particle update (this = eax, the step the stack argument, ret 4; called by the worker's job 0x509040) and the
+# wind query it and one more effect's job call (stdcall, 7 arguments; the 3 optional outputs are 0 at both callers, else the
+# lifted one runs): ~46% of the worker's busy time, mostly x87 trig and arithmetic through the soft-float path. src/leaves.cpp
+# runs them as C++ with the game's own calls (JUICED_NATIVE_LEAVES=0: the lifted ones).
+replace 005089E0 LeavesUpdate
+replace 00505760 LeavesWind
 # Smarter AI (src/ai.cpp)
 hook 0049B20E ai_line
 hook 0049DE58 ai_brake

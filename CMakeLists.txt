@@ -14,8 +14,9 @@ if(NOT EXISTS "${JUICED_GENERATED}/table.cpp")
   message(FATAL_ERROR "no lifted code in ${JUICED_GENERATED}: run tools/lift.sh first")
 endif()
 recomp_add_lifted(juiced_lifted "${JUICED_GENERATED}")
-add_executable(juiced src/main.cpp src/hooks.cpp src/sparks.cpp src/ai.cpp $<TARGET_OBJECTS:juiced_lifted>)
+add_executable(juiced src/main.cpp src/hooks.cpp src/sparks.cpp src/leaves.cpp src/ai.cpp $<TARGET_OBJECTS:juiced_lifted>)
 target_compile_features(juiced PRIVATE cxx_std_20)
+set_source_files_properties(src/leaves.cpp PROPERTIES COMPILE_OPTIONS -ffp-contract=off)
 target_include_directories(juiced PRIVATE "${X86RECOMP_DIR}/src" "${X86RECOMP_DIR}/platforms/win32/src")
 target_compile_definitions(juiced PRIVATE
   JUICED_DEFAULT_GAME_DIR="${JUICED_GAME_DIR}"
